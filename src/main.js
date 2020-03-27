@@ -7,11 +7,21 @@
 
 // define and configure main Phaser game object
 let config = {
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     height: 640,
     width: 960,
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: true,
+            gravity: {
+                x: 0,
+                y: 0
+            }
+        }
     },
     scene: [ Load, Title, Play, GameOver ]
 }
@@ -26,10 +36,6 @@ let paddle = null;
 let paddleVelocity = 150;
 const colors = [0x1BE7ff, 0x6EEB83, 0xE4FF1A, 0xE8AA14]; // colors array (rainbows!)
 let colorIndex = 0;
-let extremeMODE;
-let shadowLock = false;
-let barrierSpeed;
-let level;
 let highScore;
 let newHighScore;
 let cursors;
