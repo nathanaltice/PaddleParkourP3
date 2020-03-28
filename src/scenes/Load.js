@@ -8,7 +8,7 @@ class Load extends Phaser.Scene {
 
         // load graphics assets
         this.load.image('paddle', './assets/img/paddle.png');
-        this.load.image('fragment', './assets/imag/fragment.png');
+        this.load.image('fragment', './assets/img/fragment.png');
         // load audio assets (to-do)
     }
 

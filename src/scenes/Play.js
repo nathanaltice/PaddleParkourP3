@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
     create() {
         // reset parameters
         this.barrierSpeed = -450;
+        this.barrierSpeedMax = -850;
         this.level = 0;
         this.extremeMODE = false;
         this.shadowLock = false;
@@ -25,29 +26,39 @@ class Play extends Phaser.Scene {
         paddle.setDepth(1);         // ensures that paddle z-depth remains above shadow paddles
         paddle.destroyed = false;   // custom property to track paddle life
 
-        // set up barrier group
+        // set up barrier group and add first barrier to kick things off
+        this.barrierGroup = this.add.group({
+            runChildUpdate: true    // make sure update runs on group children
+        });
+        this.addBarrier();
 
-
-        // set up difficulty timer
+        // set up difficulty timer (triggers callback every second)
         this.difficultyTimer = this.time.addEvent({
             delay: 1000,
-            callback: this.speedBump,
+            callback: this.levelBump,
             callbackScope: this,
             loop: true
         });
+
+        // debug
+        
+    }
+
+    addBarrier() {
+        let barrier = new Barrier(this, this.barrierSpeed);     // create new barrier
+        this.barrierGroup.add(barrier);                         // add it to existing group
     }
 
     update() {
-        // check for player input
-        if(cursors.up.isDown) {
-            paddle.body.velocity.y -= paddleVelocity;
-        } else if(cursors.down.isDown) {
-            paddle.body.velocity.y += paddleVelocity;
-        }
-
-        // check for collision
         if(!paddle.destroyed) {
-
+            // check for player input
+            if(cursors.up.isDown) {
+                paddle.body.velocity.y -= paddleVelocity;
+            } else if(cursors.down.isDown) {
+                paddle.body.velocity.y += paddleVelocity;
+            }
+            // check for collisions
+            this.physics.world.collide(paddle, this.barrierGroup, this.paddleCollision, null, this);
         }
 
         // spawn rainbow trail if in EXTREME mode
@@ -59,10 +70,17 @@ class Play extends Phaser.Scene {
         }
     }
 
-    speedBump() {
-        // raise barrier speed, increment level
-        this.barrierSpeed -= 10;
-        this.level++; console.log(`level: ${ this.level }`);
+    levelBump() {
+        // increment level
+        this.level++;
+
+        // bump speed every 5 levels
+        if(this.level % 5 == 0) {
+            console.log(`level: ${this.level}, speed: ${this.barrierSpeed}`);
+            if(this.barrierSpeed >= this.barrierSpeedMax) {
+                this.barrierSpeed -= 25;
+            }
+        }
 
         // set HARD mode
         if(this.level == 30) {
@@ -91,5 +109,26 @@ class Play extends Phaser.Scene {
         });
         // set a kill timer for trail effect
         this.time.delayedCall(750, () => { shadowPaddle.destroy(); } );
+    }
+
+    paddleCollision() {
+        paddle.destroyed = true;        // turn off collision checking
+        this.difficultyTimer.destroy(); // shut down timer
+
+        // create particle explosion
+        let deathParticles = this.add.particles('fragment');
+        let deathEmitter = deathParticles.createEmitter({
+            alpha: { start: 1, end: 0 },
+            scale: { start: 0.75, end: 0 },
+            speedX: { min: -50, max: 500 },
+            speedY: { min: -500, max: 500 },
+            lifespan: 1500
+        });
+        // make it boom 💥
+        deathEmitter.explode(150, paddle.x, paddle.y);
+        // kill paddle
+        paddle.destroy();              
+        // switch states after timer expires
+        this.time.delayedCall(3000, () => { this.scene.start('gameOverScene'); });
     }
 }

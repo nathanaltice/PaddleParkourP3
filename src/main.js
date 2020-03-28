@@ -29,13 +29,13 @@ let config = {
 let game = new Phaser.Game(config);
 
 // define globals
-let centerX = game.config.width/2;
-let centerY = game.config.height/2;
+var centerX = game.config.width/2;
+var centerY = game.config.height/2;
 const textSpacer = 64;
-let paddle = null;
-let paddleVelocity = 150;
-const colors = [0x1BE7ff, 0x6EEB83, 0xE4FF1A, 0xE8AA14]; // colors array (rainbows!)
-let colorIndex = 0;
-let highScore;
-let newHighScore;
-let cursors;
+var paddle = null;
+const paddleWidth = 16;
+const paddleHeight = 128;
+const paddleVelocity = 150;
+var highScore;
+var newHighScore;
+var cursors;
