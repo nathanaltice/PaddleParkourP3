@@ -12,6 +12,13 @@ class Play extends Phaser.Scene {
         this.shadowLock = false;
 
         // set up audio, play bgm
+        this.bgm = this.sound.add('beats', { 
+            mute: false,
+            volume: 1,
+            rate: 1,
+            loop: true 
+        });
+        this.bgm.play();
 
         // set up cursor keys
         cursors = this.input.keyboard.createCursorKeys();
@@ -71,17 +78,18 @@ class Play extends Phaser.Scene {
     }
 
     levelBump() {
-        // increment level
+        // increment level (aka score)
         level++;
 
         // bump speed every 5 levels
         if(level % 5 == 0) {
             console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
-            if(this.barrierSpeed >= this.barrierSpeedMax) {
+            this.sound.play('clang', { volume: 0.75 });         // play clang to signal speed up
+            if(this.barrierSpeed >= this.barrierSpeedMax) {     // increase barrier speed
                 this.barrierSpeed -= 25;
+                this.bgm.rate += 0.01;                          // increase bgm playback rate (ドキドキ)
             }
         }
-
         // set HARD mode
         if(level == 45) {
             paddle.scaleY = 0.75;
@@ -112,8 +120,18 @@ class Play extends Phaser.Scene {
     }
 
     paddleCollision() {
-        paddle.destroyed = true;        // turn off collision checking
-        this.difficultyTimer.destroy(); // shut down timer
+        paddle.destroyed = true;                    // turn off collision checking
+        this.difficultyTimer.destroy();             // shut down timer
+        this.sound.play('death', { volume: 0.5 });  // play death sound
+        // create tween to fade out audio
+        this.tweens.add({
+            onStart: () => console.log('fading volume...'),
+            targets: this.bgm,
+            volume: 0,
+            ease: 'Linear',
+            duration: 2000,
+            onComplete: () => console.log('fade done')
+        });
 
         // create particle explosion
         let deathParticles = this.add.particles('fragment');

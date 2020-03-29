@@ -9,7 +9,10 @@ class Load extends Phaser.Scene {
         // load graphics assets
         this.load.image('paddle', './assets/img/paddle.png');
         this.load.image('fragment', './assets/img/fragment.png');
-        // load audio assets (to-do)
+        // load audio assets
+        this.load.audio('beats', ['./assets/audio/beats.mp3']);
+        this.load.audio('clang', ['./assets/audio/clang.mp3']);
+        this.load.audio('death', ['./assets/audio/death.mp3']);
     }
 
     create() {

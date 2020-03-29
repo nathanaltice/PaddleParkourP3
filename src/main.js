@@ -4,10 +4,12 @@
 // Barrier prefab adapted from Travis Faas, An Introduction to HTML5 Game Development with Phaser.js (2017)
 // Updated 3/29/20
 
+// keep me honest
 'use strict';
 
 // define and configure main Phaser game object
 let config = {
+    parent: 'myGame',
     type: Phaser.AUTO,
     height: 640,
     width: 960,
