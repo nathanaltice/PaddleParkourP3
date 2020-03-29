@@ -46,9 +46,6 @@ class Play extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
-
-        // debug
-        
     }
 
     addBarrier() {
@@ -83,7 +80,7 @@ class Play extends Phaser.Scene {
 
         // bump speed every 5 levels
         if(level % 5 == 0) {
-            console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
+            //console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
             this.sound.play('clang', { volume: 0.75 });         // play clang to signal speed up
             if(this.barrierSpeed >= this.barrierSpeedMax) {     // increase barrier speed
                 this.barrierSpeed -= 25;
