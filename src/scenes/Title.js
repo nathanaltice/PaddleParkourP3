@@ -5,7 +5,7 @@ class Title extends Phaser.Scene {
 
     create() {
         // add title screen text
-        this.add.text(centerX, centerY, 'PADDLE PARKOUR PIII', { fontFamily: 'Helvetica', fontSize: '48px', color: '#FFF' }).setOrigin(0.5);
+        this.add.text(centerX, centerY, 'PADDLE PARKOUR P3', { fontFamily: 'Helvetica', fontSize: '48px', color: '#FACADE' }).setOrigin(0.5);
         this.add.text(centerX, centerY + textSpacer, 'Use the UP + DOWN ARROWS to dodge color paddles and avoid getting REKT', { fontFamily: 'Helvetica', fontSize: '24px', color: '#FFF' }).setOrigin(0.5);
         this.add.text(centerX, centerY + textSpacer*2, 'Press UP ARROW to Start', { fontFamily: 'Helvetica', fontSize: '24px', color: '#FFF' }).setOrigin(0.5);
 

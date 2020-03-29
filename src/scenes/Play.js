@@ -6,8 +6,8 @@ class Play extends Phaser.Scene {
     create() {
         // reset parameters
         this.barrierSpeed = -450;
-        this.barrierSpeedMax = -850;
-        this.level = 0;
+        this.barrierSpeedMax = -950;
+        level = 0;
         this.extremeMODE = false;
         this.shadowLock = false;
 
@@ -72,22 +72,22 @@ class Play extends Phaser.Scene {
 
     levelBump() {
         // increment level
-        this.level++;
+        level++;
 
         // bump speed every 5 levels
-        if(this.level % 5 == 0) {
-            console.log(`level: ${this.level}, speed: ${this.barrierSpeed}`);
+        if(level % 5 == 0) {
+            console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
             if(this.barrierSpeed >= this.barrierSpeedMax) {
                 this.barrierSpeed -= 25;
             }
         }
 
         // set HARD mode
-        if(this.level == 30) {
+        if(level == 45) {
             paddle.scaleY = 0.75;
         }
         // set EXTREME mode
-        if(this.level == 60) {
+        if(level == 75) {
             paddle.scaleY = 0.5;
             this.extremeMODE = true;
         }

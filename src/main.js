@@ -1,7 +1,8 @@
 // Nathan Altice
-// Paddle Parkour PIII
+// Paddle Parkour P3
 // An endless dodging game (ported from Phaser CE)
-// Updated 3/27/20
+// Barrier prefab adapted from Travis Faas, An Introduction to HTML5 Game Development with Phaser.js (2017)
+// Updated 3/29/20
 
 'use strict';
 
@@ -16,7 +17,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            //debug: true,
             gravity: {
                 x: 0,
                 y: 0
@@ -26,6 +27,10 @@ let config = {
     scene: [ Load, Title, Play, GameOver ]
 }
 
+// uncomment the following line if you need to purge local storage data
+//localStorage.clear();
+
+// define game
 let game = new Phaser.Game(config);
 
 // define globals
@@ -36,6 +41,7 @@ var paddle = null;
 const paddleWidth = 16;
 const paddleHeight = 128;
 const paddleVelocity = 150;
+var level;
 var highScore;
-var newHighScore;
+var newHighScore = false;
 var cursors;
