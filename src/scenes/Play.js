@@ -122,12 +122,10 @@ class Play extends Phaser.Scene {
         this.sound.play('death', { volume: 0.5 });  // play death sound
         // create tween to fade out audio
         this.tweens.add({
-            onStart: () => console.log('fading volume...'),
             targets: this.bgm,
             volume: 0,
             ease: 'Linear',
             duration: 2000,
-            onComplete: () => console.log('fade done')
         });
 
         // create particle explosion
