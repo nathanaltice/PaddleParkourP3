@@ -9,8 +9,6 @@ class Barrier extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable();                    
         this.tint = Math.random() * 0xFFFFFF;   // randomize tint
         this.newBarrier = true;                 // custom property to control barrier spawning
-
-        console.log(this.scene);
     }
 
     update() {
