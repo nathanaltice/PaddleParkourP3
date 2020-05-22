@@ -20,8 +20,8 @@ class Play extends Phaser.Scene {
         });
         this.bgm.play();
 
-        // get the PARTYcles started
-        // create line on right side for particles source
+        // 🎉 let's get the PARTYcles started 🎉
+        // create line on right side of screen for particles source
         let line = new Phaser.Geom.Line(w, 0, w, h);  
         // create particle manager  
         this.particleManager = this.add.particles('cross');
@@ -35,7 +35,7 @@ class Play extends Phaser.Scene {
             blendMode: 'ADD'
         });
 
-        // set up paddle (physics sprite)
+        // set up player paddle (physics sprite) and set properties
         paddle = this.physics.add.sprite(32, centerY, 'paddle').setOrigin(0.5);
         paddle.setCollideWorldBounds(true);
         paddle.setBounce(0.5);
@@ -46,11 +46,14 @@ class Play extends Phaser.Scene {
         paddle.destroyed = false;   // custom property to track paddle life
         paddle.setBlendMode('SCREEN');
 
-        // set up barrier group and add first barrier to kick things off
+        // set up barrier group
         this.barrierGroup = this.add.group({
             runChildUpdate: true    // make sure update runs on group children
         });
-        this.addBarrier();
+        // wait a few seconds before spawning barriers
+        this.time.delayedCall(2500, () => { 
+            this.addBarrier(); 
+        });
 
         // set up difficulty timer (triggers callback every second)
         this.difficultyTimer = this.time.addEvent({
@@ -97,7 +100,7 @@ class Play extends Phaser.Scene {
         // increment level (ie, score)
         level++;
 
-        // bump speed every 5 levels
+        // bump speed every 5 levels (until max is hit)
         if(level % 5 == 0) {
             //console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
             this.sound.play('clang', { volume: 0.75 });         // play clang to signal speed up
@@ -105,10 +108,11 @@ class Play extends Phaser.Scene {
                 this.barrierSpeed -= 25;
                 this.bgm.rate += 0.01;                          // increase bgm playback rate (ドキドキ)
             }
-            // print score
-            let lvltxt01 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
-            let lvltxt02 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
-            let lvltxt03 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
+            
+            // make flying score text
+            let lvltxt01 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
+            let lvltxt02 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
+            let lvltxt03 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
             lvltxt01.setBlendMode('ADD').setTint(0xff0000);
             lvltxt02.setBlendMode('SCREEN').setTint(0x0000ff);
             this.tweens.add({
@@ -125,14 +129,19 @@ class Play extends Phaser.Scene {
             this.tweens.add({
                 targets: lvltxt02,
                 duration: 2500,
-                y: '-=15'       // slowly nudge y-coordinate up
+                y: '-=20'       // slowly nudge y-coordinate up
             });
             this.tweens.add({
                 targets: lvltxt03,
                 duration: 2500,
-                y: '+=15'       // slowly nudge y-coordinate down
+                y: '+=20'       // slowly nudge y-coordinate down
             });
-            // cam shake: .shake( [duration] [, intensity] [, force] [, callback] [, context])
+ 
+            // change game border color
+            let rndColor = this.getRandomColor();
+            document.getElementsByTagName('canvas')[0].style.borderColor = rndColor;
+
+            // cam shake: .shake( [duration] [, intensity] )
             this.cameras.main.shake(100, 0.01);
         }
 
@@ -145,6 +154,17 @@ class Play extends Phaser.Scene {
             paddle.scaleY = 0.5;        // 1/2 paddle size
             this.extremeMODE = true;    // 🌈
         }
+    }
+
+    // random HTML hex color generator from:
+    // https://stackoverflow.com/questions/1484506/random-color-generator
+    getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
     spawnShadowPaddles() {
