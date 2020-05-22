@@ -2,7 +2,7 @@
 // Paddle Parkour P3
 // An endless dodging game (ported from Phaser CE)
 // Barrier prefab adapted from Travis Faas, An Introduction to HTML5 Game Development with Phaser.js (2017)
-// Updated: 3/29/20
+// Updated: 5/21/20
 
 // keep me honest
 'use strict';

@@ -6,13 +6,17 @@ class Load extends Phaser.Scene {
     preload() {
         // set up loading bar (to-do)
 
+        this.load.path = './assets/';
         // load graphics assets
-        this.load.image('paddle', './assets/img/paddle.png');
-        this.load.image('fragment', './assets/img/fragment.png');
+        this.load.image('paddle', 'img/paddle.png');
+        this.load.image('fragment', 'img/fragment.png');
+        this.load.image('cross', 'img/white_cross.png');
         // load audio assets
-        this.load.audio('beats', ['./assets/audio/beats.mp3']);
-        this.load.audio('clang', ['./assets/audio/clang.mp3']);
-        this.load.audio('death', ['./assets/audio/death.mp3']);
+        this.load.audio('beats', ['audio/beats.mp3']);
+        this.load.audio('clang', ['audio/clang.mp3']);
+        this.load.audio('death', ['audio/death.mp3']);
+        // load font
+        this.load.bitmapFont('gem', 'font/gem.png', 'font/gem.xml');
     }
 
     create() {

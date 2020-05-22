@@ -5,9 +5,19 @@ class Title extends Phaser.Scene {
 
     create() {
         // add title screen text
-        this.add.text(centerX, centerY, 'PADDLE PARKOUR P3', { fontFamily: 'Helvetica', fontSize: '48px', color: '#FACADE' }).setOrigin(0.5);
-        this.add.text(centerX, centerY + textSpacer, 'Use the UP + DOWN ARROWS to dodge color paddles and avoid getting REKT', { fontFamily: 'Helvetica', fontSize: '24px', color: '#FFF' }).setOrigin(0.5);
-        this.add.text(centerX, centerY + textSpacer*2, 'Press UP ARROW to Start', { fontFamily: 'Helvetica', fontSize: '24px', color: '#FFF' }).setOrigin(0.5);
+        let title = this.add.bitmapText(centerX, centerY, 'gem', 'PADDLE PARKOUR P3', 48).setOrigin(0.5);
+        title.tint = 0xFACADE;
+        this.add.bitmapText(centerX, centerY + textSpacer, 'gem', 'Use the UP + DOWN ARROWS to dodge color paddles and avoid getting REKT', 24).setOrigin(0.5);
+        this.add.bitmapText(centerX, centerY + textSpacer*2, 'gem', 'Press UP ARROW to Start', 24).setOrigin(0.5);
+
+        // text tweens
+        this.tweens.add({
+            targets: title,
+            duration: 1500,
+            angle: { from: -0.75, to: 0.75 },
+            yoyo: true,
+            repeat: -1
+        });
 
         // set up cursor keys
         cursors = this.input.keyboard.createCursorKeys();
