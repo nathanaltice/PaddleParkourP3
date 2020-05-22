@@ -21,14 +21,18 @@ class Play extends Phaser.Scene {
         this.bgm.play();
 
         // get the PARTYcles started
-        let line = new Phaser.Geom.Line(w, 0, w, h);    // create line on right side for particles source
+        // create line on right side for particles source
+        let line = new Phaser.Geom.Line(w, 0, w, h);  
+        // create particle manager  
         this.particleManager = this.add.particles('cross');
+        // add emitter and setup properties
         this.lineEmitter = this.particleManager.createEmitter({
-            gravityX: -100,
+            gravityX: -200,
             lifespan: 5000,
             alpha: { start: 0.5, end: 0.1 },
             tint: [ 0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0x0000ff ],
-            emitZone: { type: 'edge', source: line, quantity: 100, yoyo: true }
+            emitZone: { type: 'random', source: line, quantity: 150 },
+            blendMode: 'ADD'
         });
 
         // set up paddle (physics sprite)
@@ -40,6 +44,7 @@ class Play extends Phaser.Scene {
         paddle.setDragY(200);
         paddle.setDepth(1);         // ensures that paddle z-depth remains above shadow paddles
         paddle.destroyed = false;   // custom property to track paddle life
+        paddle.setBlendMode('SCREEN');
 
         // set up barrier group and add first barrier to kick things off
         this.barrierGroup = this.add.group({
@@ -59,9 +64,11 @@ class Play extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
     }
 
+    // create new barriers and add them to existing barrier group
     addBarrier() {
-        let barrier = new Barrier(this, this.barrierSpeed);     // create new barrier
-        this.barrierGroup.add(barrier);                         // add it to existing group
+        let tilt =  Phaser.Math.Between(0, 50);
+        let barrier = new Barrier(this, this.barrierSpeed - tilt);
+        this.barrierGroup.add(barrier);
     }
 
     update() {
@@ -87,7 +94,7 @@ class Play extends Phaser.Scene {
     }
 
     levelBump() {
-        // increment level (aka score)
+        // increment level (ie, score)
         level++;
 
         // bump speed every 5 levels
@@ -98,15 +105,45 @@ class Play extends Phaser.Scene {
                 this.barrierSpeed -= 25;
                 this.bgm.rate += 0.01;                          // increase bgm playback rate (ドキドキ)
             }
+            // print score
+            let lvltxt01 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
+            let lvltxt02 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
+            let lvltxt03 = this.add.bitmapText(w, centerY, 'gem', level, 128).setOrigin(0, 0.5);
+            lvltxt01.setBlendMode('ADD').setTint(0xff0000);
+            lvltxt02.setBlendMode('SCREEN').setTint(0x0000ff);
+            this.tweens.add({
+                targets: [lvltxt01, lvltxt02, lvltxt03],
+                duration: 2500,
+                x: { from: w, to: 0 },
+                alpha: { from: 0.9, to: 0 },
+                onComplete: function() {
+                    lvltxt01.destroy();
+                    lvltxt02.destroy();
+                    lvltxt03.destroy();
+                }
+            });
+            this.tweens.add({
+                targets: lvltxt02,
+                duration: 2500,
+                y: '-=15'       // slowly nudge y-coordinate up
+            });
+            this.tweens.add({
+                targets: lvltxt03,
+                duration: 2500,
+                y: '+=15'       // slowly nudge y-coordinate down
+            });
+            // cam shake: .shake( [duration] [, intensity] [, force] [, callback] [, context])
+            this.cameras.main.shake(100, 0.01);
         }
+
         // set HARD mode
         if(level == 45) {
-            paddle.scaleY = 0.75;
+            paddle.scaleY = 0.75;       // 3/4 paddle size
         }
         // set EXTREME mode
         if(level == 75) {
-            paddle.scaleY = 0.5;
-            this.extremeMODE = true;
+            paddle.scaleY = 0.5;        // 1/2 paddle size
+            this.extremeMODE = true;    // 🌈
         }
     }
 
@@ -116,7 +153,7 @@ class Play extends Phaser.Scene {
         shadowPaddle.scaleY = paddle.scaleY;            // scale to parent paddle
         shadowPaddle.tint = Math.random() * 0xFFFFFF;   // tint w/ rainbow colors
         shadowPaddle.alpha = 0.5;                       // make semi-transparent
-        // tween alpha to 0
+        // tween shadow paddle alpha to 0
         this.tweens.add({ 
             targets: shadowPaddle, 
             alpha: { from: 0.5, to: 0 }, 
@@ -131,8 +168,10 @@ class Play extends Phaser.Scene {
     paddleCollision() {
         paddle.destroyed = true;                    // turn off collision checking
         this.difficultyTimer.destroy();             // shut down timer
-        this.sound.play('death', { volume: 0.5 });  // play death sound
-        // create tween to fade out audio
+        this.sound.play('death', { volume: 0.25 }); // play death sound
+        this.cameras.main.shake(2500, 0.0075);      // camera death shake
+        
+        // add tween to fade out audio
         this.tweens.add({
             targets: this.bgm,
             volume: 0,
@@ -141,19 +180,44 @@ class Play extends Phaser.Scene {
         });
 
         // create particle explosion
-        let deathParticles = this.add.particles('fragment');
-        let deathEmitter = deathParticles.createEmitter({
+        let deathParticleManager = this.add.particles('cross');
+        let deathEmitter = deathParticleManager.createEmitter({
             alpha: { start: 1, end: 0 },
             scale: { start: 0.75, end: 0 },
-            speedX: { min: -50, max: 500 },
-            speedY: { min: -500, max: 500 },
-            lifespan: 1500
+            speed: { min: -150, max: 150 },
+            lifespan: 4000,
+            blendMode: 'ADD'
+        });
+        // store current paddle bounds so we can create a paddle-shaped death emitter
+        let pBounds = paddle.getBounds();
+        deathEmitter.setEmitZone({
+            source: new Phaser.Geom.Rectangle(pBounds.x, pBounds.y, pBounds.width, pBounds.height),
+            type: 'edge',
+            quantity: 1000
         });
         // make it boom 💥
-        deathEmitter.explode(150, paddle.x, paddle.y);
+        deathEmitter.explode(1000);
+        
+        // create two gravity wells: one offset from paddle and one at center screen
+        deathParticleManager.createGravityWell({
+            x: pBounds.centerX + 200,
+            y: pBounds.centerY,
+            power: 0.5,
+            epsilon: 100,
+            gravity: 100
+        });
+        deathParticleManager.createGravityWell({
+            x: centerX,
+            y: centerY,
+            power: 2,
+            epsilon: 100,
+            gravity: 150
+        });
+       
         // kill paddle
-        paddle.destroy();              
+        paddle.destroy();    
+
         // switch states after timer expires
-        this.time.delayedCall(3000, () => { this.scene.start('gameOverScene'); });
+        this.time.delayedCall(4000, () => { this.scene.start('gameOverScene'); });
     }
 }
