@@ -113,8 +113,9 @@ class Play extends Phaser.Scene {
             let lvltxt01 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
             let lvltxt02 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
             let lvltxt03 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
-            lvltxt01.setBlendMode('ADD').setTint(0xff0000);
+            lvltxt01.setBlendMode('ADD').setTint(0xff00ff);
             lvltxt02.setBlendMode('SCREEN').setTint(0x0000ff);
+            lvltxt03.setBlendMode('ADD').setTint(0xffff00);
             this.tweens.add({
                 targets: [lvltxt01, lvltxt02, lvltxt03],
                 duration: 2500,
