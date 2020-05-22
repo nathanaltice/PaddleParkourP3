@@ -4,7 +4,7 @@ class Load extends Phaser.Scene {
     }
 
     preload() {
-        // set up loading bar (to-do)
+        // to-do: loading bar
 
         this.load.path = './assets/';
         // load graphics assets
