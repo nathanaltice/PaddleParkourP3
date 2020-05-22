@@ -20,8 +20,16 @@ class Play extends Phaser.Scene {
         });
         this.bgm.play();
 
-        // set up cursor keys
-        cursors = this.input.keyboard.createCursorKeys();
+        // get the PARTYcles started
+        let line = new Phaser.Geom.Line(w, 0, w, h);    // create line on right side for particles source
+        this.particleManager = this.add.particles('cross');
+        this.lineEmitter = this.particleManager.createEmitter({
+            gravityX: -100,
+            lifespan: 5000,
+            alpha: { start: 0.5, end: 0.1 },
+            tint: [ 0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0x0000ff ],
+            emitZone: { type: 'edge', source: line, quantity: 100, yoyo: true }
+        });
 
         // set up paddle (physics sprite)
         paddle = this.physics.add.sprite(32, centerY, 'paddle').setOrigin(0.5);
@@ -46,6 +54,9 @@ class Play extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+
+        // set up cursor keys
+        cursors = this.input.keyboard.createCursorKeys();
     }
 
     addBarrier() {
@@ -54,6 +65,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        // make sure paddle is still alive
         if(!paddle.destroyed) {
             // check for player input
             if(cursors.up.isDown) {
