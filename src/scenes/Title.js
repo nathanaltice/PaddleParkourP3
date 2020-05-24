@@ -30,16 +30,38 @@ class Title extends Phaser.Scene {
             duration: 2500,
             angle: { from: 1, to: -1 },
             yoyo: true,
-            repeat: -1
+            repeat: -1,
+            onRepeat: function() {
+                this.cameras.main.shake(100, 0.0025);
+            },
+            onRepeatScope: this
         });
 
         // set up cursor keys
         cursors = this.input.keyboard.createCursorKeys();
+
+        // debug
+        
     }
 
     update() {
         // check for UP input
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            // temp variables to maintain scope
+            let textureManager = this.textures;
+            let scene = this;
+            // take snapshot of the entire game viewport
+            // https://photonstorm.github.io/phaser3-docs/Phaser.Renderer.WebGL.WebGLRenderer.html#snapshot__anchor
+            this.game.renderer.snapshot(function(image) {
+                // make sure an existing texture w/ that key doesn't already exist
+                if(textureManager.exists('titlesnapshot')) {
+                    textureManager.remove('titlesnapshot');
+                }
+                // take the snapshot img returned from callback and add to texture manager
+                textureManager.addImage('titlesnapshot', image);
+            });
+            
+            // start next scene
             this.scene.start('playScene');
         }
     }

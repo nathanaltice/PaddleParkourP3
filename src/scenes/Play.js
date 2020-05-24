@@ -20,6 +20,16 @@ class Play extends Phaser.Scene {
         });
         this.bgm.play();
 
+        // add snapshot of title screen 
+        // let titleSnap = this.add.image(centerX, centerY, 'titlesnapshot').setOrigin(0.5);
+        // this.tweens.add({
+        //     targets: titleSnap,
+        //     duration: 4500,
+        //     alpha: { from: 1, to: 0 },
+        //     scale: { from: 1, to: 0 },
+        //     repeat: 0
+        // });
+
         // 🎉 let's get the PARTYcles started 🎉
         // create line on right side of screen for particles source
         let line = new Phaser.Geom.Line(w, 0, w, h);  
@@ -160,9 +170,9 @@ class Play extends Phaser.Scene {
     // random HTML hex color generator from:
     // https://stackoverflow.com/questions/1484506/random-color-generator
     getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
