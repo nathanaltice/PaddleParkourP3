@@ -21,14 +21,14 @@ class Play extends Phaser.Scene {
         this.bgm.play();
 
         // add snapshot of title screen 
-        // let titleSnap = this.add.image(centerX, centerY, 'titlesnapshot').setOrigin(0.5);
-        // this.tweens.add({
-        //     targets: titleSnap,
-        //     duration: 4500,
-        //     alpha: { from: 1, to: 0 },
-        //     scale: { from: 1, to: 0 },
-        //     repeat: 0
-        // });
+        let titleSnap = this.add.image(centerX, centerY, 'titlesnapshot').setOrigin(0.5);
+        this.tweens.add({
+            targets: titleSnap,
+            duration: 4500,
+            alpha: { from: 1, to: 0 },
+            scale: { from: 1, to: 0 },
+            repeat: 0
+        });
 
         // 🎉 let's get the PARTYcles started 🎉
         // create line on right side of screen for particles source
