@@ -42,17 +42,12 @@ class GameOver extends Phaser.Scene {
     update() {
         // wait for UP input to restart game
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            // temp variables to maintain scope
             let textureManager = this.textures;
-            let scene = this;
-            // take snapshot of the entire game viewport
-            // https://photonstorm.github.io/phaser3-docs/Phaser.Renderer.WebGL.WebGLRenderer.html#snapshot__anchor
+            // take snapshot of the entire game viewport (same as title screen)
             this.game.renderer.snapshot(function(image) {
-                // make sure an existing texture w/ that key doesn't already exist
                 if(textureManager.exists('titlesnapshot')) {
                     textureManager.remove('titlesnapshot');
                 }
-                // take the snapshot img returned from callback and add to texture manager
                 textureManager.addImage('titlesnapshot', image);
             });
 

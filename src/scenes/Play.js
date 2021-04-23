@@ -20,7 +20,7 @@ class Play extends Phaser.Scene {
         });
         this.bgm.play();
 
-        // add snapshot of title screen 
+        // add snapshot image from prior Scene
         let titleSnap = this.add.image(centerX, centerY, 'titlesnapshot').setOrigin(0.5);
         this.tweens.add({
             targets: titleSnap,
@@ -52,9 +52,9 @@ class Play extends Phaser.Scene {
         paddle.setImmovable();
         paddle.setMaxVelocity(0, 600);
         paddle.setDragY(200);
-        paddle.setDepth(1);         // ensures that paddle z-depth remains above shadow paddles
-        paddle.destroyed = false;   // custom property to track paddle life
-        paddle.setBlendMode('SCREEN');
+        paddle.setDepth(1);             // ensures that paddle z-depth remains above shadow paddles
+        paddle.destroyed = false;       // custom property to track paddle life
+        paddle.setBlendMode('SCREEN');  // set a WebGL blend mode
 
         // set up barrier group
         this.barrierGroup = this.add.group({
@@ -79,8 +79,8 @@ class Play extends Phaser.Scene {
 
     // create new barriers and add them to existing barrier group
     addBarrier() {
-        let tilt =  Phaser.Math.Between(0, 50);
-        let barrier = new Barrier(this, this.barrierSpeed - tilt);
+        let speedVariance =  Phaser.Math.Between(0, 50);
+        let barrier = new Barrier(this, this.barrierSpeed - speedVariance);
         this.barrierGroup.add(barrier);
     }
 
@@ -119,7 +119,7 @@ class Play extends Phaser.Scene {
                 this.bgm.rate += 0.01;                          // increase bgm playback rate (ドキドキ)
             }
             
-            // make flying score text
+            // make flying score text (using three stacked)
             let lvltxt01 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
             let lvltxt02 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
             let lvltxt03 = this.add.bitmapText(w, centerY, 'gem', `<${level}>`, 96).setOrigin(0, 0.5);
