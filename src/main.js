@@ -1,9 +1,9 @@
 // Nathan Altice
 // Paddle Parkour P3
-// An endless dodging game (ported from Phaser CE)
+// An endless dodging game
 // Barrier prefab adapted from Travis Faas, An Introduction to HTML5 Game Development with Phaser.js (2017)
-// Original: 4/20/17
-// Updated: 7/6/20
+// Original: 4/20/17 (Phaser CE version)
+// Updated: 4/23/21
 
 // keep me honest
 'use strict';
