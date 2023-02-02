@@ -11,7 +11,7 @@ class Title extends Phaser.Scene {
        
         this.add.bitmapText(centerX, centerY + textSpacer, 'gem', 'Use the UP & DOWN ARROWS to dodge color paddles', 24).setOrigin(0.5);
         this.add.bitmapText(centerX, centerY + textSpacer*3, 'gem', 'Press UP ARROW to Start', 36).setOrigin(0.5);
-        this.add.bitmapText(centerX, h - textSpacer, 'gem', 'Nathan Altice 2020', 16).setOrigin(0.5);
+        this.add.bitmapText(centerX, h - textSpacer, 'gem', 'Nathan Altice 2017-23', 16).setOrigin(0.5);
 
         // title text tween
         this.tweens.add({
@@ -46,15 +46,16 @@ class Title extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             let textureManager = this.textures;
             // take snapshot of the entire game viewport
-            // https://newdocs.phaser.io/docs/3.54.0/Phaser.Renderer.WebGL.WebGLRenderer#snapshot
+            // https://newdocs.phaser.io/docs/3.55.2/Phaser.Renderer.WebGL.WebGLRenderer#snapshot
             // .snapshot(callback, type, encoderOptions)
-            this.game.renderer.snapshot((image) => {
+            // the image is automatically passed to the callback
+            this.game.renderer.snapshot((snapshotImage) => {
                 // make sure an existing texture w/ that key doesn't already exist
                 if(textureManager.exists('titlesnapshot')) {
                     textureManager.remove('titlesnapshot');
                 }
                 // take the snapshot img returned from callback and add to texture manager
-                textureManager.addImage('titlesnapshot', image);
+                textureManager.addImage('titlesnapshot', snapshotImage);
             });
             
             // start next scene
