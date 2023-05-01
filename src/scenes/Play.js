@@ -117,7 +117,7 @@ class Play extends Phaser.Scene {
         // bump speed every 5 levels (until max is hit)
         if(level % 5 == 0) {
             //console.log(`level: ${level}, speed: ${this.barrierSpeed}`);
-            this.sound.play('clang', { volume: 0.75 });         // play clang to signal speed up
+            this.sound.play('clang', { volume: 0.5 });         // play clang to signal speed up
             if(this.barrierSpeed >= this.barrierSpeedMax) {     // increase barrier speed
                 this.barrierSpeed -= 25;
                 this.bgm.rate += 0.01;                          // increase bgm playback rate (ドキドキ)
